@@ -1,0 +1,333 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Linked List Visualization</title>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      margin: 0;
+      padding: 0;
+      text-align: center;
+    }
+
+    section {
+      display: none;
+      padding: 20px;
+      height: 100vh;
+    }
+
+    section.active {
+      display: block;
+    }
+
+    h1 {
+      color: #333;
+    }
+
+    p {
+      color: #555;
+      max-width: 600px;
+      margin: 20px auto;
+      line-height: 1.6;
+    }
+
+    .button {
+      margin: 10px;
+      padding: 10px 20px;
+      font-size: 16px;
+      background-color: #ff8da1;
+      color: white;
+      border: none;
+      border-radius: 5px;
+      cursor: pointer;
+      transition: background-color 0.3s ease;
+    }
+
+    .button:hover {
+      background-color: #63c5da;
+    }
+
+    .list-container {
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      margin-top: 20px;
+      flex-wrap: wrap;
+    }
+
+    .node {
+      display: flex;
+      align-items: center;
+      margin: 5px;
+    }
+
+    .node-data {
+      background-color: #63c5da;
+      color: white;
+      padding: 10px;
+      border-radius: 5px;
+      margin-right: 10px;
+    }
+
+    .arrow {
+      font-size: 20px;
+      margin-right: 10px;
+    }
+
+    #intro h2 {
+      font-size: 32px;
+      font-weight: bold;
+    }
+
+    #intro .small-text {
+      font-size: 14px;
+      color: #777;
+    }
+
+    #steps h2 {
+      font-size: 32px;
+      font-weight: bold;
+    }
+
+    .steps-list {
+      list-style-type: none;
+      padding-left: 0;
+      font-size: 16px;
+      color: #777;
+      text-align: left;
+      display: inline-block;
+    }
+
+    .steps-list li {
+      margin: 10px 0;
+    }
+
+    .back-button {
+      position: absolute;
+      bottom: 20px;
+      left: 50%;
+      transform: translateX(-50%);
+      font-size: 14px;
+      padding: 8px 16px;
+    }
+  </style>
+</head>
+<body>
+
+  <section id="intro" class="active">
+   
+    <h2>LINKED LIST VISUALIZATION REPRESENTATION</h2>
+    <p>
+      A linked list is a data structure used to store a collection of elements.
+      Each element (called a node) contains a value and a reference to the next node in the sequence.
+      Linked lists are dynamic in size, making them efficient for memory management.
+      Unlike arrays, linked lists allow insertion or deletion of elements without shifting other elements, improving performance in certain use cases.
+    </p>
+    <p class="small-text">
+      In a linked list, the first node is called the head, and the last node points to null, indicating the end of the list. 
+      Linked lists can be used to implement various other data structures, such as stacks and queues.
+    </p>
+
+    <h2>STEPS FOR LINKED LIST</h2>
+    <ol class="steps-list">
+      <li><b>1.Create a node with a data value by add node.</b></li>
+      <li><b>2.Link the node to the next node.</b></li>
+      <li><b>3.Add node to the list dynamically to desired position .</b></li>
+      <li><b>4.Delete node from the list dynamically from the desired position.</b></li>
+      <li><b>5.Delete a node from the end of the list.</b></li>
+    </ol>
+
+    <button class="button" onclick="showDemo()">Start Demo</button>
+  </section>
+
+  <section id="demo">
+    <h1>Linked List Visualization</h1>
+    <div>
+      <input type="text" id="nodeData" placeholder="Enter node data">
+      <button class="button" onclick="addNode()">Add Node</button>
+      <input type="number" id="insertPosition" placeholder="Position to insert" min="1">
+      <button class="button" onclick="insertNode()">Insert Node at Position</button>
+      <input type="number" id="deletePosition" placeholder="Position to delete" min="1">
+      <button class="button" onclick="deleteNodeAtPosition()">Delete Node at Position</button>
+      <button class="button" onclick="deleteNode()">Delete Last Node</button>
+    </div>
+    <div class="list-container" id="listContainer"></div>
+    <button class="button back-button" onclick="showIntro()">Back to Introduction</button>
+  </section>
+
+  <script>
+    function showDemo() {
+      document.getElementById("intro").classList.remove("active");
+      document.getElementById("demo").classList.add("active");
+    }
+
+    function showIntro() {
+      document.getElementById("demo").classList.remove("active");
+      document.getElementById("intro").classList.add("active");
+    }
+
+    class Node {
+      constructor(data) {
+        this.data = data;
+        this.next = null;
+      }
+    }
+
+    class LinkedList {
+      constructor() {
+        this.head = null;
+      }
+
+      add(data) {
+        const newNode = new Node(data);
+        if (!this.head) {
+          this.head = newNode;
+        } else {
+          let current = this.head;
+          while (current.next) {
+            current = current.next;
+          }
+          current.next = newNode;
+        }
+        this.display();
+      }
+
+      insert(data, position) {
+        const newNode = new Node(data);
+
+        if (position === 1) {
+          newNode.next = this.head;
+          this.head = newNode;
+          this.display();
+          return;
+        }
+
+        let current = this.head;
+        let count = 1;
+
+        while (current && count < position - 1) {
+          current = current.next;
+          count++;
+        }
+
+        if (current) {
+          newNode.next = current.next;
+          current.next = newNode;
+        }
+
+        this.display();
+      }
+
+      deleteAtPosition(position) {
+        if (!this.head) {
+          alert("The list is empty!");
+          return;
+        }
+
+        if (position === 1) {
+          this.head = this.head.next;
+          this.display();
+          return;
+        }
+
+        let current = this.head;
+        let count = 1;
+
+        while (current && count < position - 1) {
+          current = current.next;
+          count++;
+        }
+
+        if (current && current.next) {
+          current.next = current.next.next;
+        }
+
+        this.display();
+      }
+
+      delete() {
+        if (!this.head) {
+          alert("The list is empty!");
+          return;
+        }
+
+        if (!this.head.next) {
+          this.head = null;
+        } else {
+          let current = this.head;
+          while (current.next.next) {
+            current = current.next;
+          }
+          current.next = null;
+        }
+        this.display();
+      }
+
+      display() {
+        const container = document.getElementById("listContainer");
+        container.innerHTML = "";
+        let current = this.head;
+        while (current) {
+          const nodeDiv = document.createElement("div");
+          nodeDiv.className = "node";
+
+          const dataDiv = document.createElement("div");
+          dataDiv.className = "node-data";
+          dataDiv.innerText = current.data;
+
+          const arrowDiv = document.createElement("div");
+          arrowDiv.className = "arrow";
+          arrowDiv.innerHTML = current.next ? "→" : "";
+
+          nodeDiv.appendChild(dataDiv);
+          nodeDiv.appendChild(arrowDiv);
+          container.appendChild(nodeDiv);
+
+          current = current.next;
+        }
+      }
+    }
+
+    const linkedList = new LinkedList();
+
+    function addNode() {
+      const data = document.getElementById("nodeData").value.trim();
+      if (data) {
+        linkedList.add(data);
+        document.getElementById("nodeData").value = "";
+      } else {
+        alert("Please enter some data!");
+      }
+    }
+
+    function insertNode() {
+      const data = document.getElementById("nodeData").value.trim();
+      const position = parseInt(document.getElementById("insertPosition").value.trim());
+      if (data && position > 0) {
+        linkedList.insert(data, position);
+        document.getElementById("nodeData").value = "";
+        document.getElementById("insertPosition").value = "";
+      } else {
+        alert("Please enter valid data and position!");
+      }
+    }
+
+    function deleteNodeAtPosition() {
+      const position = parseInt(document.getElementById("deletePosition").value.trim());
+      if (position > 0) {
+        linkedList.deleteAtPosition(position);
+        document.getElementById("deletePosition").value = "";
+      } else {
+        alert("Please enter a valid position!");
+      }
+    }
+
+    function deleteNode() {
+      linkedList.delete();
+    }
+  </script>
+
+</body>
+</html>
